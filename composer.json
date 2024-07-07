@@ -1,0 +1,35 @@
+{
+    "name": "plutuss/geo-names-laravel",
+    "description": "",
+    "keywords": [
+        "laravel",
+        "GeoNames",
+        "geo-names"
+    ],
+    "minimum-stability": "stable",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "plutuss",
+            "email": "dima92konovalenko@gmail.com",
+            "homepage": "https://github.com/plutuss"
+        }
+    ],
+    "require": {
+        "php": "^8.0|^8.1|^8.2",
+        "illuminate/support": "^8.0|^9.0|^10.0|^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Plutuss\\Geo\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Plutuss\\GeoNames\\Providers\\GeoNamesServiceProvider"
+            ]
+        }
+    }
+}
