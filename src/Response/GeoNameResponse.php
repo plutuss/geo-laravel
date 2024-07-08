@@ -25,7 +25,7 @@ class GeoNameResponse implements GeoNameResponseInterface
     public function getNestedValue(string $path, mixed $default = null): mixed
     {
         return data_get(
-            $this->getData(),
+            $this->getArrayData(),
             $path,
             $default);
     }
@@ -39,9 +39,14 @@ class GeoNameResponse implements GeoNameResponseInterface
     }
 
 
-    public function getData(): Collection
+    public function getCollectionData(): Collection
     {
         return collect($this->data ?? []);
+    }
+
+    public function getArrayData(): array
+    {
+        return $this->data ?? [];
     }
 
     public function __get(string $name)

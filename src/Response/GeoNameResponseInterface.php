@@ -9,7 +9,9 @@ interface GeoNameResponseInterface
 
     public function latitude(): mixed;
 
-    public function getData(): Collection;
+    public function getCollectionData(): Collection;
+
+    public function getArrayData(): array;
 
     public function longitude(): mixed;
 
