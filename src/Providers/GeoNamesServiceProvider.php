@@ -27,6 +27,8 @@ class GeoNamesServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->publishes([
+            __DIR__ . '/../config/geo-names.php' => config_path('geo-names.php'),
+        ]);
     }
 }
