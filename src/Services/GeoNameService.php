@@ -2,9 +2,9 @@
 
 namespace Plutuss\GeoNames\Services;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
-use Plutuss\GeoNames\Response\GeoNameResponse;
-use Plutuss\GeoNames\Response\GeoNameResponseInterface;
+use Plutuss\GeoNames\Response\AdapterResponse;
 use Plutuss\GeoNames\Traits\HasParameter;
 
 class GeoNameService
@@ -32,17 +32,17 @@ class GeoNameService
         return static::$instance;
     }
 
+
     /**
      * @param $data
-     * @return Collection
+     * @return array|JsonResponse|Collection
      * @throws \Exception
      */
-    private function getResponse($data): Collection
+    private function getResponse($data): JsonResponse|array|Collection
     {
+
         if (isset($data)) {
-            return collect($data)->map(function ($item): GeoNameResponseInterface {
-                return new GeoNameResponse($item);
-            });
+            return AdapterResponse::getInstance()->getResponse($data);
         }
 
         throw new \Exception('No found');
@@ -52,7 +52,7 @@ class GeoNameService
      * @return Collection
      * @throws \Exception
      */
-    public function getCities(): Collection
+    public function getCities()
     {
         $data = $this->clientService->searchJSON()->json();
 
@@ -66,7 +66,7 @@ class GeoNameService
      * @return Collection
      * @throws \Exception
      */
-    public function getCitiesFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10): Collection
+    public function getCitiesFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10)
     {
         $data = $this->clientService
             ->setOption($postalCode)
@@ -77,14 +77,7 @@ class GeoNameService
 
     }
 
-    /**
-     * @param string $name
-     * @param int $radius
-     * @param int $maxRows
-     * @return Collection
-     * @throws \Exception
-     */
-    public function getCitiFromName(string $name, int $radius = 5, int $maxRows = 10): Collection
+    public function getCitiFromName(string $name, int $radius = 5, int $maxRows = 10)
     {
         $data = $this->clientService
             ->setOption($name)
@@ -96,13 +89,8 @@ class GeoNameService
     }
 
 
-    /**
-     * @param int $lat
-     * @param int $lng
-     * @return Collection
-     * @throws \Exception
-     */
-    public function findNearbyPostalCodes(int $lat, int $lng): Collection
+
+    public function findNearbyPostalCodes(int $lat, int $lng)
     {
         $this->setLatitude($lat);
         $this->setLongitude($lng);
@@ -114,11 +102,8 @@ class GeoNameService
         return $this->getResponse($data['postalCodes']);
     }
 
-    /**
-     * @return Collection
-     * @throws \Exception
-     */
-    public function postalCodeCountryInfo(): Collection
+
+    public function postalCodeCountryInfo()
     {
 
         $data = $this->clientService
@@ -128,13 +113,8 @@ class GeoNameService
         return $this->getResponse($data['geonames']);
     }
 
-    /**
-     * @param int $lat
-     * @param int $lng
-     * @return Collection
-     * @throws \Exception
-     */
-    public function findNearbyJSON(int $lat, int $lng): Collection
+
+    public function findNearbyJSON(int $lat, int $lng)
     {
 
         $this->setLatitude($lat);
