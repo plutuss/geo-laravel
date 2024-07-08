@@ -5,9 +5,9 @@ namespace Plutuss\GeoNames\Traits;
 trait HasParameter
 {
 
-    public function setCountryCode(string $countryCode): static
+    public function setCountryCode(string $value): static
     {
-        $this->clientService->setCountryCode($countryCode);
+        $this->clientService->setParams('country', $value);
 
         return $this;
     }
@@ -42,7 +42,7 @@ trait HasParameter
 
     public function setCountry(string $value): static
     {
-        $this->clientService->setParams('country', $value);
+        $this->clientService->setParams('country', trim($value));
 
         return $this;
     }
@@ -140,6 +140,12 @@ trait HasParameter
     public function setLongitude(string $value): static
     {
         $this->clientService->setParams('lng', $value);
+        return $this;
+    }
+
+    public function setRadius(int $value): static
+    {
+        $this->clientService->setParams('radius', $value);
         return $this;
     }
 

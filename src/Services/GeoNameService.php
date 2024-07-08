@@ -12,12 +12,15 @@ class GeoNameService implements GeoNameServiceInterface
 
     use HasParameter;
 
+    private string $countryCode;
+
     private static ?GeoNameService $instance = null;
 
     public function __construct(
         protected readonly GeoNameClientService $clientService,
     )
     {
+        $this->countryCode = config('geo-names.country-code');
     }
 
     /**
@@ -31,7 +34,6 @@ class GeoNameService implements GeoNameServiceInterface
 
         return static::$instance;
     }
-
 
     /**
      * @param $data
@@ -48,48 +50,78 @@ class GeoNameService implements GeoNameServiceInterface
         throw new \Exception('Not found', 404);
     }
 
+
     /**
-     * @return Collection
+     * @param string $country
+     * @return JsonResponse|array|Collection
      * @throws \Exception
      */
-    public function getCities()
+    public function searchJSON(string $country): JsonResponse|array|Collection
     {
-        $data = $this->clientService->searchJSON()->json();
+        $this->setCountry($country);
+        $this->setCountryCode($this->countryCode);
 
-        return $this->getResponse($data['geonames']);
+        $data = $this->clientService
+            ->apiRequest('searchJSON')
+            ->json();
+
+        return $this->getResponse($data['geonames'] ?? $data);
     }
+
 
     /**
      * @param int $postalCode
      * @param int $radius
      * @param int $maxRows
-     * @return Collection
+     * @return JsonResponse|array|Collection
      * @throws \Exception
      */
-    public function getCitiesFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10)
+    public function postalCodeSearchJSONFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection
     {
+
+        $this->setCountryCode($this->countryCode);
+        $this->setPostalCode($postalCode);
+
+        $this->setRadius($radius);
+        $this->setMaxRows($maxRows);
+
         $data = $this->clientService
-            ->setOption($postalCode)
-            ->postalCodeSearchJSON($radius, $maxRows)
+            ->apiRequest('postalCodeSearchJSON')
             ->json();
 
-        return $this->getResponse($data['postalCodes']);
+        return $this->getResponse($data['postalCodes'] ?? $data);
+    }
+
+    /**
+     * @param string $name
+     * @param int $radius
+     * @param int $maxRows
+     * @return JsonResponse|array|Collection
+     * @throws \Exception
+     */
+    public function postalCodeSearchJSONFromName(string $name, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection
+    {
+        $this->setPlaceNameStartsWith($name);
+        $this->setCountryCode($this->countryCode);
+
+        $this->setRadius($radius);
+        $this->setMaxRows($maxRows);
+
+        $data = $this->clientService
+            ->apiRequest('postalCodeSearchJSON')
+            ->json();
+
+        return $this->getResponse($data['postalCodes'] ?? $data);
 
     }
 
-    public function getCitiFromName(string $name, int $radius = 5, int $maxRows = 10)
-    {
-        $data = $this->clientService
-            ->setOption($name)
-            ->postalCodeSearchJSON($radius, $maxRows)
-            ->json();
-
-        return $this->getResponse($data['postalCodes']);
-
-    }
-
-
-    public function findNearbyPostalCodes(int $lat, int $lng)
+    /**
+     * @param int $lat
+     * @param int $lng
+     * @return JsonResponse|array|Collection
+     * @throws \Exception
+     */
+    public function findNearbyPostalCodes(int $lat, int $lng): JsonResponse|array|Collection
     {
         $this->setLatitude($lat);
         $this->setLongitude($lng);
@@ -98,22 +130,30 @@ class GeoNameService implements GeoNameServiceInterface
             ->apiRequest('findNearbyPostalCodes')
             ->json();
 
-        return $this->getResponse($data['postalCodes']);
+        return $this->getResponse($data['postalCodes'] ?? $data);
     }
 
-
-    public function postalCodeCountryInfo()
+    /**
+     * @return JsonResponse|array|Collection
+     * @throws \Exception
+     */
+    public function postalCodeCountryInfo(): JsonResponse|array|Collection
     {
 
         $data = $this->clientService
             ->apiRequest('postalCodeCountryInfo')
             ->json();
 
-        return $this->getResponse($data['geonames']);
+        return $this->getResponse($data['geonames'] ?? $data);
     }
 
-
-    public function findNearbyJSON(int $lat, int $lng)
+    /**
+     * @param int $lat
+     * @param int $lng
+     * @return JsonResponse|array|Collection
+     * @throws \Exception
+     */
+    public function findNearbyJSON(int $lat, int $lng): JsonResponse|array|Collection
     {
 
         $this->setLatitude($lat);
@@ -123,7 +163,7 @@ class GeoNameService implements GeoNameServiceInterface
             ->apiRequest('findNearbyJSON')
             ->json();
 
-        return $this->getResponse($data['geonames']);
+        return $this->getResponse($data['geonames'] ?? $data);
     }
 
 
