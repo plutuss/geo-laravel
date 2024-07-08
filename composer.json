@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Plutuss\\Geo\\": "src/"
+            "Plutuss\\GeoNames\\": "src/"
         }
     },
     "extra": {
