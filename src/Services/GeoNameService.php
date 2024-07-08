@@ -167,4 +167,13 @@ class GeoNameService implements GeoNameServiceInterface
     }
 
 
+    /**
+     * @param array $params
+     * @return $this
+     */
+    public function setOption(array $params): static
+    {
+        $this->clientService->setOption($params);
+        return $this;
+    }
 }

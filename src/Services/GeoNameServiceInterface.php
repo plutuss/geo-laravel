@@ -165,4 +165,10 @@ interface GeoNameServiceInterface
      */
     public function findNearbyJSON(int $lat, int $lng): JsonResponse|array|Collection;
 
+    /**
+     * @param array $params
+     * @return $this
+     */
+    public function setOption(array $params): static;
+
 }

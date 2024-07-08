@@ -28,6 +28,7 @@ use Plutuss\GeoNames\Services\GeoNameServiceInterface;
  * @method static GeoNameServiceInterface setSouth(float $value)
  * @method static GeoNameServiceInterface setLatitude(string $value)
  * @method static GeoNameServiceInterface setLongitude(string $value)
+ * @method static GeoNameServiceInterface setOption(array $params)
  * @method static JsonResponse|array|Collection searchJSON(string $country)
  * @method static JsonResponse|array|Collection postalCodeSearchJSONFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10)
  * @method static JsonResponse|array|Collection postalCodeSearchJSONFromName(string $name, int $radius = 5, int $maxRows = 10)
