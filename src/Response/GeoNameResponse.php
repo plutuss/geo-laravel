@@ -4,6 +4,9 @@ namespace Plutuss\GeoNames\Response;
 
 use Illuminate\Support\Collection;
 
+/**
+ *  /Plutuss\GeoNames\Response\GeoNameResponse
+ */
 class GeoNameResponse implements GeoNameResponseInterface
 {
 

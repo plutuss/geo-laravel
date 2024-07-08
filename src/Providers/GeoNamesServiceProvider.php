@@ -3,6 +3,9 @@
 namespace Plutuss\GeoNames\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Plutuss\GeoNames\Services\GeoNameClientService;
+use Plutuss\GeoNames\Services\GeoNameService;
+use Plutuss\GeoNames\Services\GeoNameServiceInterface;
 
 class GeoNamesServiceProvider extends ServiceProvider
 {
@@ -11,11 +14,12 @@ class GeoNamesServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-//        $this->app->singleton('getid3.media', MediaAnalyzerServiceInterface::class);
-//
-//        $this->app->singleton(MediaAnalyzerServiceInterface::class, function ($app) {
-//            return new MediaAnalyzerService(new \getID3);
-//        });
+        $this->app->singleton('geo.name.app', GeoNameServiceInterface::class);
+
+        $this->app->singleton(GeoNameServiceInterface::class, function ($app) {
+            $client = GeoNameClientService::getInstance();
+            return GeoNameService::getInstance($client);
+        });
     }
 
     /**

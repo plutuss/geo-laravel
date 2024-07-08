@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Plutuss\GeoNames\Response\AdapterResponse;
 use Plutuss\GeoNames\Traits\HasParameter;
 
-class GeoNameService
+class GeoNameService implements GeoNameServiceInterface
 {
 
     use HasParameter;
@@ -45,7 +45,7 @@ class GeoNameService
             return AdapterResponse::getInstance()->getResponse($data);
         }
 
-        throw new \Exception('No found');
+        throw new \Exception('Not found', 404);
     }
 
     /**
@@ -87,7 +87,6 @@ class GeoNameService
         return $this->getResponse($data['postalCodes']);
 
     }
-
 
 
     public function findNearbyPostalCodes(int $lat, int $lng)
