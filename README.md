@@ -29,7 +29,6 @@ php artisan vendor:publish --provider="Plutuss\GeoNames\Providers\GeoNamesServic
 ```
 
 ```dotenv
-# geo-names.php
+#  .env
 GEO_NAMES_USERNAME=user_name
-GEO_NAMES_ENDPOINT=null
 ```
