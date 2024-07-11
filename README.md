@@ -32,3 +32,77 @@ php artisan vendor:publish --provider="Plutuss\GeoNames\Providers\GeoNamesServic
 #  .env
 GEO_NAMES_USERNAME=user_name
 ```
+## Use Facade GeoName
+
+```php
+        $response = GeoName::setPostalCode(6600)
+            ->setCountryCode('AT')
+            ->searchJSON('city_name');
+            
+      // OR
+      
+        $response = GeoName::setOption([
+            'postalcode' => 6600,
+            'country' => 'AT',
+        ])->searchJSON('city_name');
+```
+
+
+```php
+    public function setCountryCode(string $countryCode): static;
+    
+    public function setPostalCode(int $value): static;
+
+    public function setPostalCodeStartsWith(string $value): static;
+ 
+    public function setPlaceName(string $value): static;
+
+    public function setPlaceNameStartsWith(string $value): static;
+
+    public function setCountry(string $value): static;
+
+    public function setCountryBias(string $value): static;
+
+    public function setMaxRows(int $value): static;
+  
+    public function setStyle(string $value): static;
+
+    public function setOperator(string $value): static;
+
+    public function setCharset(string $value): static;
+
+    public function setIsReduced(bool $value): static;
+   
+    public function setEast(float $value): static;
+   
+    public function setWest(float $value): static;
+
+    public function setNorth(float $value): static;
+
+    public function setSouth(float $value): static;
+ 
+    public function setLatitude(string $value): static;
+
+    public function setLongitude(string $value): static;
+ 
+    public function setRadius(int $value): static;
+```
+
+```php
+    public function setOption(array $params): static;
+```
+
+```php
+    public function searchJSON(string $country): JsonResponse|array|Collection;
+
+    public function postalCodeSearchJSONFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
+
+    public function postalCodeSearchJSONFromName(string $name, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
+
+    public function findNearbyPostalCodes(int $lat, int $lng): JsonResponse|array|Collection;
+
+    public function postalCodeCountryInfo(): JsonResponse|array|Collection;
+
+    public function findNearbyJSON(int $lat, int $lng): JsonResponse|array|Collection;
+
+```

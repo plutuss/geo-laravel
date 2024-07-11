@@ -15,10 +15,10 @@ interface GeoNameServiceInterface
     public function setCountryCode(string $countryCode): static;
 
     /**
-     * @param string $value
+     * @param int $value
      * @return $this
      */
-    public function setPostalCode(string $value): static;
+    public function setPostalCode(int $value): static;
 
     /**
      * @param string $value
