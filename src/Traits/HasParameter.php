@@ -102,6 +102,7 @@ trait HasParameter
     {
 
         $validSizes = ['SHORT', 'MEDIUM', 'LONG', 'FULL'];
+
         if (!in_array($value, $validSizes)) {
             throw new \InvalidArgumentException("Invalid size value");
         }
@@ -119,6 +120,7 @@ trait HasParameter
     {
 
         $validSizes = ['AND', 'OR'];
+
         if (!in_array($value, $validSizes)) {
             throw new \InvalidArgumentException("Invalid operator value");
         }
@@ -223,6 +225,33 @@ trait HasParameter
     {
         $this->clientService->setParams('radius', $value);
         return $this;
+    }
+
+    /**
+     * @param array $params
+     * @return $this
+     */
+    public function setOption(array $params): static
+    {
+        $this->clientService->setOption($params);
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function hasParam(string $key): bool
+    {
+        return $this->clientService->hasParam($key);
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams(): array
+    {
+        return $this->clientService->getParams();
     }
 
 }

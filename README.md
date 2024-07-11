@@ -49,60 +49,88 @@ GEO_NAMES_USERNAME=user_name
 
 
 ```php
-    public function setCountryCode(string $countryCode): static;
+     setCountryCode(string $countryCode): static;
     
-    public function setPostalCode(int $value): static;
+     setPostalCode(int $value): static;
 
-    public function setPostalCodeStartsWith(string $value): static;
+     setPostalCodeStartsWith(string $value): static;
  
-    public function setPlaceName(string $value): static;
+     setPlaceName(string $value): static;
 
-    public function setPlaceNameStartsWith(string $value): static;
+     setPlaceNameStartsWith(string $value): static;
 
-    public function setCountry(string $value): static;
+     setCountry(string $value): static;
 
-    public function setCountryBias(string $value): static;
+     setCountryBias(string $value): static;
 
-    public function setMaxRows(int $value): static;
+     setMaxRows(int $value): static;
   
-    public function setStyle(string $value): static;
+     setStyle(string $value): static;
 
-    public function setOperator(string $value): static;
+     setOperator(string $value): static;
 
-    public function setCharset(string $value): static;
+     setCharset(string $value): static;
 
-    public function setIsReduced(bool $value): static;
+     setIsReduced(bool $value): static;
    
-    public function setEast(float $value): static;
+     setEast(float $value): static;
    
-    public function setWest(float $value): static;
+     setWest(float $value): static;
 
-    public function setNorth(float $value): static;
+     setNorth(float $value): static;
 
-    public function setSouth(float $value): static;
+     setSouth(float $value): static;
  
-    public function setLatitude(string $value): static;
+     setLatitude(string $value): static;
 
-    public function setLongitude(string $value): static;
+     setLongitude(string $value): static;
  
-    public function setRadius(int $value): static;
+     setRadius(int $value): static;
 ```
 
 ```php
-    public function setOption(array $params): static;
+     setOption(array $params): static;
 ```
 
 ```php
-    public function searchJSON(string $country): JsonResponse|array|Collection;
+     searchJSON(string $country): JsonResponse|array|Collection;
 
-    public function postalCodeSearchJSONFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
+     postalCodeSearchJSONFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
 
-    public function postalCodeSearchJSONFromName(string $name, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
+     postalCodeSearchJSONFromName(string $name, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
 
-    public function findNearbyPostalCodes(int $lat, int $lng): JsonResponse|array|Collection;
+     findNearbyPostalCodes(int $lat, int $lng): JsonResponse|array|Collection;
 
-    public function postalCodeCountryInfo(): JsonResponse|array|Collection;
+     postalCodeCountryInfo(): JsonResponse|array|Collection;
 
-    public function findNearbyJSON(int $lat, int $lng): JsonResponse|array|Collection;
+     findNearbyJSON(int $lat, int $lng): JsonResponse|array|Collection;
 
+```
+
+## Response
+
+```php
+
+     latitude(): mixed;
+
+     getCollectionData(): Collection;
+
+     getArrayData(): array;
+
+     longitude(): mixed;
+
+     placeName(): mixed;
+
+     postalCode(): mixed;
+
+     countryCode(): mixed;
+
+     region(): mixed;
+
+     land(): mixed;
+
+    // The getNestedValue() method retrieves a value
+    // from a deeply nested array using "dot" notation
+    // $response->getNestedValue('key.array')
+     getNestedValue($path, $default = null): mixed;
 ```

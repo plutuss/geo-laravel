@@ -171,4 +171,15 @@ interface GeoNameServiceInterface
      */
     public function setOption(array $params): static;
 
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function hasParam(string $key): bool;
+
+    /**
+     * @return array
+     */
+    public function getParams(): array;
+
 }

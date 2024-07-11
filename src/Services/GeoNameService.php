@@ -166,14 +166,4 @@ class GeoNameService implements GeoNameServiceInterface
         return $this->getResponse($data['geonames'] ?? $data);
     }
 
-
-    /**
-     * @param array $params
-     * @return $this
-     */
-    public function setOption(array $params): static
-    {
-        $this->clientService->setOption($params);
-        return $this;
-    }
 }
