@@ -123,11 +123,10 @@ interface GeoNameServiceInterface
     public function setRadius(int $value): static;
 
     /**
-     * @param string $country
+     * @param string|null $country
      * @return JsonResponse|array|Collection
      */
-    public function searchJSON(string $country): JsonResponse|array|Collection;
-
+    public function searchJSON(string $country = null): JsonResponse|array|Collection;
 
     /**
      * @param int $postalCode
@@ -136,7 +135,6 @@ interface GeoNameServiceInterface
      * @return JsonResponse|array|Collection
      */
     public function postalCodeSearchJSONFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
-
 
     /**
      * @param string $name
