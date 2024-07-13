@@ -52,14 +52,15 @@ class GeoNameService implements GeoNameServiceInterface
 
 
     /**
-     * @param string $country
+     * @param string|null $country
      * @return JsonResponse|array|Collection
      * @throws \Exception
      */
-    public function searchJSON(string $country): JsonResponse|array|Collection
+    public function searchJSON(string $country = null): JsonResponse|array|Collection
     {
-        $this->setCountry($country);
-        $this->setCountryCode($this->countryCode);
+
+        if ($country) $this->setCountry($country);
+        if ($this->countryCode) $this->setCountryCode($this->countryCode);
 
         $data = $this->clientService
             ->apiRequest('searchJSON')
