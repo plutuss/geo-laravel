@@ -59,8 +59,8 @@ class GeoNameService implements GeoNameServiceInterface
     public function searchJSON(string $country = null): JsonResponse|array|Collection
     {
 
-        if ($country) $this->setCountry($country);
-        if ($this->countryCode) $this->setCountryCode($this->countryCode);
+        if (!empty($country)) $this->setCountry($country);
+        if (!empty($this->countryCode)) $this->setCountryCode($this->countryCode);
 
         $data = $this->clientService
             ->apiRequest('searchJSON')
@@ -132,6 +132,24 @@ class GeoNameService implements GeoNameServiceInterface
             ->json();
 
         return $this->getResponse($data['postalCodes'] ?? $data);
+    }
+
+    /**
+     * @param int $lat
+     * @param int $lng
+     * @return JsonResponse|array|Collection
+     * @throws \Exception
+     */
+    public function getCountryCodeFromCoordinates(int $lat, int $lng): JsonResponse|array|Collection
+    {
+        $this->setLatitude($lat);
+        $this->setLongitude($lng);
+
+        $data = $this->clientService
+            ->apiRequest('countryCode')
+            ->json();
+
+        return $this->getResponse([$data]);
     }
 
     /**

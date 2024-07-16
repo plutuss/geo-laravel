@@ -13,12 +13,22 @@ class GeoNameClientService
     private string $endpoint;
     private array $params = [];
 
+    /**
+     * @param string $key
+     * @param mixed $params
+     * @return void
+     */
     public function setParams(string $key, mixed $params): void
     {
         $this->params[$key] = $params;
     }
 
     public function __construct()
+    {
+        $this->initConfig();
+    }
+
+    private function initConfig(): void
     {
         $this->username = config('geo-names.username');
         $this->endpoint = config('geo-names.endpoint');

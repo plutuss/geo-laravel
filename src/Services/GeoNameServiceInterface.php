@@ -164,6 +164,13 @@ interface GeoNameServiceInterface
     public function findNearbyJSON(int $lat, int $lng): JsonResponse|array|Collection;
 
     /**
+     * @param int $lat
+     * @param int $lng
+     * @return JsonResponse|array|Collection
+     */
+    public function getCountryCodeFromCoordinates(int $lat, int $lng): JsonResponse|array|Collection;
+
+    /**
      * @param array $params
      * @return $this
      */
