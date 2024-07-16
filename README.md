@@ -35,16 +35,31 @@ GEO_NAMES_USERNAME=user_name
 ## Use Facade GeoName
 
 ```php
+
+        $response = GeoName::postalCodeSearchJSONFromName('city_name');
+
         $response = GeoName::setPostalCode(6600)
-            ->setCountryCode('AT')
-            ->searchJSON('city_name');
+            ->setCountryCode('CH')
+            ->postalCodeSearchJSONFromName('city_name');
             
-      // OR
+          // OR
       
         $response = GeoName::setOption([
-            'postalcode' => 6600,
-            'country' => 'AT',
-        ])->searchJSON('city_name');
+            'country' => 'CH',
+        ])->postalCodeSearchJSONFromName('city_name');
+```
+
+```php
+        $response = GeoName::postalCodeSearchJSONFromPostCode(6600);
+
+        $response = GeoName::setCountryCode('CH')
+            ->postalCodeSearchJSONFromPostCode(6600);
+            
+          // OR
+
+        $response = GeoName::setOption([
+            'country' => 'CH',
+        ])->postalCodeSearchJSONFromPostCode('6600');
 ```
 
 
