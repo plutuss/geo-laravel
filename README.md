@@ -59,7 +59,7 @@ GEO_NAMES_USERNAME=user_name
 
         $response = GeoName::setOption([
             'country' => 'CH',
-        ])->postalCodeSearchJSONFromPostCode('6600');
+        ])->postalCodeSearchJSONFromPostCode(6600);
 ```
 
 
