@@ -18,7 +18,16 @@ class GeoNameService implements GeoNameServiceInterface
 
     public function __construct(
         protected readonly GeoNameClientService $clientService,
-    )
+    ) {
+        $this->initConfig();
+    }
+
+    /**
+     * initConfig
+     *
+     * @return void
+     */
+    public function initConfig(): void
     {
         $this->countryCode = config('geo-names.country-code');
     }
@@ -59,8 +68,10 @@ class GeoNameService implements GeoNameServiceInterface
     public function searchJSON(string $country = null): JsonResponse|array|Collection
     {
 
-        if (!empty($country)) $this->setCountry($country);
-        if (!empty($this->countryCode)) $this->setCountryCode($this->countryCode);
+        if (!empty($country))
+            $this->setCountry($country);
+        if (!empty($this->countryCode))
+            $this->setCountryCode($this->countryCode);
 
         $data = $this->clientService
             ->apiRequest('searchJSON')
