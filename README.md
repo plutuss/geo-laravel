@@ -21,7 +21,7 @@
 
 
 ```shell
- composer require plutuss/geo-names-laravel
+ composer require plutuss/laravel-geonames-api
 ```
 
 ```shell
@@ -32,6 +32,8 @@ php artisan vendor:publish --provider="Plutuss\GeoNames\Providers\GeoNamesServic
 #  .env
 GEO_NAMES_USERNAME=user_name
 ```
+Publishing the config is optional. Set `GEO_NAMES_USERNAME` before making requests.
+
 ## Use Facade GeoName
 
 ```php
@@ -60,13 +62,16 @@ GEO_NAMES_USERNAME=user_name
         $response = GeoName::setOption([
             'country' => 'CH',
         ])->postalCodeSearchJSONFromPostCode('6600');
+
+        $response = GeoName::postalCodeSearchJSONFromPostCode('01067');
+        $response = GeoName::findNearbyJSON(51.0504, 13.7373);
 ```
 
 
 ```php
      setCountryCode(string $countryCode): static;
     
-     setPostalCode(int $value): static;
+     setPostalCode(string|int $value): static;
 
      setPostalCodeStartsWith(string $value): static;
  
@@ -108,21 +113,30 @@ GEO_NAMES_USERNAME=user_name
 ```
 
 ```php
-     searchJSON(string $country): JsonResponse|array|Collection;
+     searchJSON(?string $country = null): JsonResponse|array|Collection;
 
-     postalCodeSearchJSONFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
+     postalCodeSearchJSONFromPostCode(string|int $postalCode, ?int $radius = null, ?int $maxRows = null): JsonResponse|array|Collection;
 
-     postalCodeSearchJSONFromName(string $name, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
+     postalCodeSearchJSONFromName(string $name, ?int $radius = null, ?int $maxRows = null): JsonResponse|array|Collection;
 
-     findNearbyPostalCodes(int $lat, int $lng): JsonResponse|array|Collection;
+     findNearbyPostalCodes(float $lat, float $lng): JsonResponse|array|Collection;
+
+     getCountryCodeFromCoordinates(float $lat, float $lng): JsonResponse|array|Collection;
 
      postalCodeCountryInfo(): JsonResponse|array|Collection;
 
-     findNearbyJSON(int $lat, int $lng): JsonResponse|array|Collection;
+     findNearbyJSON(float $lat, float $lng): JsonResponse|array|Collection;
 
 ```
 
+Options set through the facade apply to the next request and are cleared even if it fails.
+Method arguments take precedence over fluent options, which take precedence over configuration defaults.
+Postal searches default to a radius of 5 and a maximum of 10 rows.
+
 ## Response
+
+An empty result is returned in the configured format. HTTP failures raise Laravel's HTTP client exception.
+GeoNames errors and malformed responses raise `UnexpectedValueException`.
 
 ```php
 

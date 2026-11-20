@@ -13,14 +13,14 @@ return [
    |
    */
     'username' => env('GEO_NAMES_USERNAME', ''),
-    'endpoint' => env('GEO_NAMES_ENDPOINT', 'http://api.geonames.org'),
+    'endpoint' => env('GEO_NAMES_ENDPOINT', 'https://secure.geonames.org'),
     'country-code' => '', // 'DE','US','FR',
 
 
     'type_response' => [
 
         /**
-         *  Arrays with wrapper with class Answer
+         *  Arrays with wrapper with GeoNameResponse
          */
         'arrays_with_wrapper' => false,
 

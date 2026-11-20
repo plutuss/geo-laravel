@@ -4,6 +4,7 @@ namespace Plutuss\GeoNames\Traits;
 
 trait HasParameter
 {
+    private array $params = [];
 
     /**
      * @param string $value
@@ -11,18 +12,18 @@ trait HasParameter
      */
     public function setCountryCode(string $value): static
     {
-        $this->clientService->setParams('country', $value);
+        $this->params['country'] = $value;
 
         return $this;
     }
 
     /**
-     * @param int $value
+     * @param string|int $value
      * @return $this
      */
-    public function setPostalCode(int $value): static
+    public function setPostalCode(string|int $value): static
     {
-        $this->clientService->setParams('postalcode', $value);
+        $this->params['postalcode'] = (string) $value;
 
         return $this;
     }
@@ -33,7 +34,7 @@ trait HasParameter
      */
     public function setPostalCodeStartsWith(string $value): static
     {
-        $this->clientService->setParams('postalcode_startsWith', $value);
+        $this->params['postalcode_startsWith'] = $value;
 
         return $this;
     }
@@ -44,7 +45,7 @@ trait HasParameter
      */
     public function setPlaceName(string $value): static
     {
-        $this->clientService->setParams('placename', $value);
+        $this->params['placename'] = $value;
 
         return $this;
     }
@@ -55,7 +56,7 @@ trait HasParameter
      */
     public function setPlaceNameStartsWith(string $value): static
     {
-        $this->clientService->setParams('placename_startsWith', $value);
+        $this->params['placename_startsWith'] = $value;
 
         return $this;
     }
@@ -66,7 +67,7 @@ trait HasParameter
      */
     public function setCountry(string $value): static
     {
-        $this->clientService->setParams('country', trim($value));
+        $this->params['country'] = trim($value);
 
         return $this;
     }
@@ -78,7 +79,7 @@ trait HasParameter
      */
     public function setCountryBias(string $value): static
     {
-        $this->clientService->setParams('countryBias', $value);
+        $this->params['countryBias'] = $value;
 
         return $this;
     }
@@ -89,7 +90,7 @@ trait HasParameter
      */
     public function setMaxRows(int $value): static
     {
-        $this->clientService->setParams('maxRows', $value);
+        $this->params['maxRows'] = $value;
 
         return $this;
     }
@@ -103,11 +104,11 @@ trait HasParameter
 
         $validSizes = ['SHORT', 'MEDIUM', 'LONG', 'FULL'];
 
-        if (!in_array($value, $validSizes)) {
-            throw new \InvalidArgumentException("Invalid size value");
+        if (!in_array($value, $validSizes, true)) {
+            throw new \InvalidArgumentException("Invalid style value");
         }
 
-        $this->clientService->setParams('style', $value);
+        $this->params['style'] = $value;
 
         return $this;
     }
@@ -121,11 +122,11 @@ trait HasParameter
 
         $validSizes = ['AND', 'OR'];
 
-        if (!in_array($value, $validSizes)) {
+        if (!in_array($value, $validSizes, true)) {
             throw new \InvalidArgumentException("Invalid operator value");
         }
 
-        $this->clientService->setParams('operator', $value);
+        $this->params['operator'] = $value;
 
         return $this;
     }
@@ -136,7 +137,7 @@ trait HasParameter
      */
     public function setCharset(string $value): static
     {
-        $this->clientService->setParams('charset', $value);
+        $this->params['charset'] = $value;
 
         return $this;
     }
@@ -147,7 +148,7 @@ trait HasParameter
      */
     public function setIsReduced(bool $value): static
     {
-        $this->clientService->setParams('isReduced', $value);
+        $this->params['isReduced'] = $value;
 
         return $this;
     }
@@ -158,7 +159,7 @@ trait HasParameter
      */
     public function setEast(float $value): static
     {
-        $this->clientService->setParams('east', $value);
+        $this->params['east'] = $value;
 
         return $this;
     }
@@ -169,7 +170,7 @@ trait HasParameter
      */
     public function setWest(float $value): static
     {
-        $this->clientService->setParams('west', $value);
+        $this->params['west'] = $value;
 
         return $this;
     }
@@ -180,7 +181,7 @@ trait HasParameter
      */
     public function setNorth(float $value): static
     {
-        $this->clientService->setParams('north', $value);
+        $this->params['north'] = $value;
 
         return $this;
     }
@@ -191,7 +192,7 @@ trait HasParameter
      */
     public function setSouth(float $value): static
     {
-        $this->clientService->setParams('south', $value);
+        $this->params['south'] = $value;
 
         return $this;
     }
@@ -203,7 +204,7 @@ trait HasParameter
      */
     public function setLatitude(string $value): static
     {
-        $this->clientService->setParams('lat', $value);
+        $this->params['lat'] = $value;
         return $this;
     }
 
@@ -213,7 +214,7 @@ trait HasParameter
      */
     public function setLongitude(string $value): static
     {
-        $this->clientService->setParams('lng', $value);
+        $this->params['lng'] = $value;
         return $this;
     }
 
@@ -223,7 +224,7 @@ trait HasParameter
      */
     public function setRadius(int $value): static
     {
-        $this->clientService->setParams('radius', $value);
+        $this->params['radius'] = $value;
         return $this;
     }
 
@@ -233,7 +234,7 @@ trait HasParameter
      */
     public function setOption(array $params): static
     {
-        $this->clientService->setOption($params);
+        $this->params = array_replace($this->params, $params);
         return $this;
     }
 
@@ -243,7 +244,7 @@ trait HasParameter
      */
     public function hasParam(string $key): bool
     {
-        return $this->clientService->hasParam($key);
+        return isset($this->params[$key]);
     }
 
     /**
@@ -251,7 +252,7 @@ trait HasParameter
      */
     public function getParams(): array
     {
-        return $this->clientService->getParams();
+        return $this->params;
     }
 
 }

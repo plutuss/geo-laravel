@@ -6,183 +6,115 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Plutuss\GeoNames\Response\AdapterResponse;
 use Plutuss\GeoNames\Traits\HasParameter;
+use UnexpectedValueException;
 
 class GeoNameService implements GeoNameServiceInterface
 {
-
     use HasParameter;
 
-    private string $countryCode;
-
-    private static ?GeoNameService $instance = null;
-
-    public function __construct(
-        protected readonly GeoNameClientService $clientService,
-    )
+    public function __construct(protected GeoNameClientService $clientService)
     {
-        $this->countryCode = config('geo-names.country-code');
     }
 
-    /**
-     * @return static
-     */
-    public static function getInstance($clientService): static
+    public function searchJSON(?string $country = null): JsonResponse|array|Collection
     {
-        if (!(static::$instance instanceof static)) {
-            static::$instance = new static($clientService);
-        }
+        $country = trim($country ?? '');
+        $params = $country === '' ? [] : ['country' => $country];
 
-        return static::$instance;
+        return $this->request('searchJSON', 'geonames', $params, $this->countryDefaults());
     }
 
-    /**
-     * @param $data
-     * @return array|JsonResponse|Collection
-     * @throws \Exception
-     */
-    private function getResponse($data): JsonResponse|array|Collection
-    {
-
-        if (isset($data)) {
-            return AdapterResponse::getInstance()->getResponse($data);
-        }
-
-        throw new \Exception('Not found', 404);
+    public function postalCodeSearchJSONFromPostCode(
+        string|int $postalCode,
+        ?int $radius = null,
+        ?int $maxRows = null
+    ): JsonResponse|array|Collection {
+        return $this->searchPostalCodes(['postalcode' => (string) $postalCode], $radius, $maxRows);
     }
 
-
-    /**
-     * @param string|null $country
-     * @return JsonResponse|array|Collection
-     * @throws \Exception
-     */
-    public function searchJSON(string $country = null): JsonResponse|array|Collection
-    {
-
-        if (!empty($country)) $this->setCountry($country);
-        if (!empty($this->countryCode)) $this->setCountryCode($this->countryCode);
-
-        $data = $this->clientService
-            ->apiRequest('searchJSON')
-            ->json();
-
-        return $this->getResponse($data['geonames'] ?? $data);
+    public function postalCodeSearchJSONFromName(
+        string $name,
+        ?int $radius = null,
+        ?int $maxRows = null
+    ): JsonResponse|array|Collection {
+        return $this->searchPostalCodes(['placename_startsWith' => $name], $radius, $maxRows);
     }
 
-
-    /**
-     * @param int $postalCode
-     * @param int $radius
-     * @param int $maxRows
-     * @return JsonResponse|array|Collection
-     * @throws \Exception
-     */
-    public function postalCodeSearchJSONFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection
+    public function findNearbyPostalCodes(float $lat, float $lng): JsonResponse|array|Collection
     {
-
-        $this->setCountryCode($this->countryCode);
-        $this->setPostalCode($postalCode);
-
-        $this->setRadius($radius);
-        $this->setMaxRows($maxRows);
-
-        $data = $this->clientService
-            ->apiRequest('postalCodeSearchJSON')
-            ->json();
-
-        return $this->getResponse($data['postalCodes'] ?? $data);
+        return $this->request('findNearbyPostalCodesJSON', 'postalCodes', ['lat' => $lat, 'lng' => $lng]);
     }
 
-    /**
-     * @param string $name
-     * @param int $radius
-     * @param int $maxRows
-     * @return JsonResponse|array|Collection
-     * @throws \Exception
-     */
-    public function postalCodeSearchJSONFromName(string $name, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection
+    public function getCountryCodeFromCoordinates(float $lat, float $lng): JsonResponse|array|Collection
     {
-        $this->setPlaceNameStartsWith($name);
-        $this->setCountryCode($this->countryCode);
-
-        $this->setRadius($radius);
-        $this->setMaxRows($maxRows);
-
-        $data = $this->clientService
-            ->apiRequest('postalCodeSearchJSON')
-            ->json();
-
-        return $this->getResponse($data['postalCodes'] ?? $data);
-
+        return $this->requestRecord('countryCodeJSON', 'countryCode', ['lat' => $lat, 'lng' => $lng]);
     }
 
-    /**
-     * @param int $lat
-     * @param int $lng
-     * @return JsonResponse|array|Collection
-     * @throws \Exception
-     */
-    public function findNearbyPostalCodes(int $lat, int $lng): JsonResponse|array|Collection
-    {
-        $this->setLatitude($lat);
-        $this->setLongitude($lng);
-
-        $data = $this->clientService
-            ->apiRequest('findNearbyPostalCodes')
-            ->json();
-
-        return $this->getResponse($data['postalCodes'] ?? $data);
-    }
-
-    /**
-     * @param int $lat
-     * @param int $lng
-     * @return JsonResponse|array|Collection
-     * @throws \Exception
-     */
-    public function getCountryCodeFromCoordinates(int $lat, int $lng): JsonResponse|array|Collection
-    {
-        $this->setLatitude($lat);
-        $this->setLongitude($lng);
-
-        $data = $this->clientService
-            ->apiRequest('countryCode')
-            ->json();
-
-        return $this->getResponse([$data]);
-    }
-
-    /**
-     * @return JsonResponse|array|Collection
-     * @throws \Exception
-     */
     public function postalCodeCountryInfo(): JsonResponse|array|Collection
     {
-
-        $data = $this->clientService
-            ->apiRequest('postalCodeCountryInfo')
-            ->json();
-
-        return $this->getResponse($data['geonames'] ?? $data);
+        return $this->request('postalCodeCountryInfoJSON', 'geonames');
     }
 
-    /**
-     * @param int $lat
-     * @param int $lng
-     * @return JsonResponse|array|Collection
-     * @throws \Exception
-     */
-    public function findNearbyJSON(int $lat, int $lng): JsonResponse|array|Collection
+    public function findNearbyJSON(float $lat, float $lng): JsonResponse|array|Collection
     {
-
-        $this->setLatitude($lat);
-        $this->setLongitude($lng);
-
-        $data = $this->clientService
-            ->apiRequest('findNearbyJSON')
-            ->json();
-
-        return $this->getResponse($data['geonames'] ?? $data);
+        return $this->request('findNearbyJSON', 'geonames', ['lat' => $lat, 'lng' => $lng]);
     }
 
+    private function searchPostalCodes(array $params, ?int $radius, ?int $maxRows): JsonResponse|array|Collection
+    {
+        $params += array_filter(['radius' => $radius, 'maxRows' => $maxRows], static fn ($value) => $value !== null);
+
+        return $this->request(
+            'postalCodeSearchJSON',
+            'postalCodes',
+            $params,
+            $this->countryDefaults() + ['radius' => 5, 'maxRows' => 10]
+        );
+    }
+
+    private function countryDefaults(): array
+    {
+        $country = trim((string) config('geo-names.country-code'));
+
+        return $country === '' ? [] : ['country' => $country];
+    }
+
+    private function request(
+        string $method,
+        string $resultKey,
+        array $params = [],
+        array $defaults = []
+    ): JsonResponse|array|Collection {
+        $data = $this->fetch($method, $params, $defaults);
+        $records = $data[$resultKey] ?? null;
+        if (!is_array($records) || array_values($records) !== $records) {
+            throw new UnexpectedValueException("GeoNames returned an invalid $resultKey list for $method.");
+        }
+
+        foreach ($records as $record) {
+            if (!is_array($record)) {
+                throw new UnexpectedValueException("GeoNames returned an invalid record in $resultKey for $method.");
+            }
+        }
+
+        return (new AdapterResponse())->getResponse($records);
+    }
+
+    private function requestRecord(string $method, string $requiredKey, array $params): JsonResponse|array|Collection
+    {
+        $data = $this->fetch($method, $params);
+        if (!is_string($data[$requiredKey] ?? null) && !is_int($data[$requiredKey] ?? null)) {
+            throw new UnexpectedValueException("GeoNames returned no valid $requiredKey for $method.");
+        }
+
+        return (new AdapterResponse())->getResponse([$data]);
+    }
+
+    private function fetch(string $method, array $params, array $defaults = []): array
+    {
+        $params += $this->params + $defaults;
+        $this->params = [];
+
+        return $this->clientService->getJson($method, $params);
+    }
 }

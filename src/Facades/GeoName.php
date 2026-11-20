@@ -10,7 +10,7 @@ use Plutuss\GeoNames\Services\GeoNameServiceInterface;
 
 /**
  * @method static GeoNameServiceInterface setCountryCode(string $countryCode)
- * @method static GeoNameServiceInterface setPostalCode(int $value)
+ * @method static GeoNameServiceInterface setPostalCode(string|int $value)
  * @method static GeoNameServiceInterface setPostalCodeStartsWith(string $value)
  * @method static GeoNameServiceInterface setPlaceName(string $value)
  * @method static GeoNameServiceInterface setPlaceNameStartsWith(string $value)
@@ -31,13 +31,13 @@ use Plutuss\GeoNames\Services\GeoNameServiceInterface;
  * @method static GeoNameServiceInterface setOption(array $params)
  * @method static bool hasParam(string $key)
  * @method static array getParams()
- * @method static JsonResponse|array|Collection searchJSON(string $country = null)
- * @method static JsonResponse|array|Collection getCountryCodeFromCoordinates(int $lat, int $lng)
- * @method static JsonResponse|array|Collection postalCodeSearchJSONFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10)
- * @method static JsonResponse|array|Collection postalCodeSearchJSONFromName(string $name, int $radius = 5, int $maxRows = 10)
- * @method static JsonResponse|array|Collection findNearbyPostalCodes(int $lat, int $lng)
+ * @method static JsonResponse|array|Collection searchJSON(?string $country = null)
+ * @method static JsonResponse|array|Collection getCountryCodeFromCoordinates(float $lat, float $lng)
+ * @method static JsonResponse|array|Collection postalCodeSearchJSONFromPostCode(string|int $postalCode, ?int $radius = null, ?int $maxRows = null)
+ * @method static JsonResponse|array|Collection postalCodeSearchJSONFromName(string $name, ?int $radius = null, ?int $maxRows = null)
+ * @method static JsonResponse|array|Collection findNearbyPostalCodes(float $lat, float $lng)
  * @method static JsonResponse|array|Collection postalCodeCountryInfo()
- * @method static JsonResponse|array|Collection findNearbyJSON(int $lat, int $lng)
+ * @method static JsonResponse|array|Collection findNearbyJSON(float $lat, float $lng)
  *
  *
  * @see \Plutuss\GeoNames\Services\GeoNameService

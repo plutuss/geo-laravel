@@ -3,7 +3,6 @@
 namespace Plutuss\GeoNames\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Plutuss\GeoNames\Services\GeoNameClientService;
 use Plutuss\GeoNames\Services\GeoNameService;
 use Plutuss\GeoNames\Services\GeoNameServiceInterface;
 
@@ -14,12 +13,10 @@ class GeoNamesServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton('geo.name.app', GeoNameServiceInterface::class);
+        $this->mergeConfigFrom(__DIR__ . '/../config/geo-names.php', 'geo-names');
 
-        $this->app->singleton(GeoNameServiceInterface::class, function ($app) {
-            $client = GeoNameClientService::getInstance();
-            return GeoNameService::getInstance($client);
-        });
+        $this->app->scoped(GeoNameServiceInterface::class, GeoNameService::class);
+        $this->app->alias(GeoNameServiceInterface::class, 'geo.name.app');
     }
 
     /**

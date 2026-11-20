@@ -15,10 +15,10 @@ interface GeoNameServiceInterface
     public function setCountryCode(string $countryCode): static;
 
     /**
-     * @param int $value
+     * @param string|int $value
      * @return $this
      */
-    public function setPostalCode(int $value): static;
+    public function setPostalCode(string|int $value): static;
 
     /**
      * @param string $value
@@ -126,30 +126,30 @@ interface GeoNameServiceInterface
      * @param string|null $country
      * @return JsonResponse|array|Collection
      */
-    public function searchJSON(string $country = null): JsonResponse|array|Collection;
+    public function searchJSON(?string $country = null): JsonResponse|array|Collection;
 
     /**
-     * @param int $postalCode
-     * @param int $radius
-     * @param int $maxRows
+     * @param string|int $postalCode
+     * @param int|null $radius
+     * @param int|null $maxRows
      * @return JsonResponse|array|Collection
      */
-    public function postalCodeSearchJSONFromPostCode(int $postalCode, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
+    public function postalCodeSearchJSONFromPostCode(string|int $postalCode, ?int $radius = null, ?int $maxRows = null): JsonResponse|array|Collection;
 
     /**
      * @param string $name
-     * @param int $radius
-     * @param int $maxRows
+     * @param int|null $radius
+     * @param int|null $maxRows
      * @return JsonResponse|array|Collection
      */
-    public function postalCodeSearchJSONFromName(string $name, int $radius = 5, int $maxRows = 10): JsonResponse|array|Collection;
+    public function postalCodeSearchJSONFromName(string $name, ?int $radius = null, ?int $maxRows = null): JsonResponse|array|Collection;
 
     /**
-     * @param int $lat
-     * @param int $lng
+     * @param float $lat
+     * @param float $lng
      * @return JsonResponse|array|Collection
      */
-    public function findNearbyPostalCodes(int $lat, int $lng): JsonResponse|array|Collection;
+    public function findNearbyPostalCodes(float $lat, float $lng): JsonResponse|array|Collection;
 
     /**
      * @return JsonResponse|array|Collection
@@ -157,18 +157,23 @@ interface GeoNameServiceInterface
     public function postalCodeCountryInfo(): JsonResponse|array|Collection;
 
     /**
-     * @param int $lat
-     * @param int $lng
+     * @param float $lat
+     * @param float $lng
      * @return JsonResponse|array|Collection
      */
-    public function findNearbyJSON(int $lat, int $lng): JsonResponse|array|Collection;
+    public function findNearbyJSON(float $lat, float $lng): JsonResponse|array|Collection;
 
     /**
-     * @param int $lat
-     * @param int $lng
+     * @param float $lat
+     * @param float $lng
      * @return JsonResponse|array|Collection
      */
-    public function getCountryCodeFromCoordinates(int $lat, int $lng): JsonResponse|array|Collection;
+    public function getCountryCodeFromCoordinates(float $lat, float $lng): JsonResponse|array|Collection;
+
+
+
+
+
 
     /**
      * @param array $params
