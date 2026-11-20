@@ -1,21 +1,21 @@
 {
     "name": "plutuss/laravel-geonames-api",
-    "description": "The Laravel Geonames API package provides an easy way to integrate the Geonames API into your Laravel application. This package enables developers to effortlessly interact with the Geonames API to retrieve geographic data such as cities, countries, coordinates, time zones, and other location-based information",
+    "description": "GeoNames API client for Laravel. Search places and postal codes, reverse geocode coordinates, and look up countries and time zones.",
     "keywords": [
         "laravel",
-        "GeoNames",
-        "geo-names",
         "geonames",
-        "api",
-        "geolocation",
         "geocoding",
-        "geography",
-        "location",
+        "reverse-geocoding",
+        "geolocation",
+        "postal-code",
+        "zip-code",
+        "timezone",
+        "country-info",
+        "place-search",
         "coordinates",
-        "places",
-        "cities",
-        "countries"
+        "geography"
     ],
+    "homepage": "https://github.com/plutuss/geo-laravel",
     "minimum-stability": "stable",
     "type": "library",
     "license": "MIT",
@@ -26,6 +26,10 @@
             "homepage": "https://github.com/plutuss"
         }
     ],
+    "support": {
+        "issues": "https://github.com/plutuss/geo-laravel/issues",
+        "source": "https://github.com/plutuss/geo-laravel"
+    },
     "require": {
         "php": "^8.0",
         "illuminate/support": "^8.0|^9.0|^10.0|^11.0"
