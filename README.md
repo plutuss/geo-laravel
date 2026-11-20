@@ -8,7 +8,7 @@ Look up postal codes, find places near coordinates, and resolve local time zones
 
 ## Installation
 
-Requires Laravel 8–11 and PHP 8.0 or newer, subject to your Laravel version's PHP requirements.
+Requires Laravel 8–13 and PHP 8.0 or newer, subject to your Laravel version's PHP requirements. Laravel 12 requires PHP 8.2+, and Laravel 13 requires PHP 8.3+.
 
 ```bash
 composer require plutuss/laravel-geonames-api
