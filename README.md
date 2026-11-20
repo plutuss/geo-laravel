@@ -1,191 +1,120 @@
-## Installed packages
+# Laravel GeoNames API
 
-## Laravel:
+[![Packagist version](https://img.shields.io/packagist/v/plutuss/laravel-geonames-api)](https://packagist.org/packages/plutuss/laravel-geonames-api)
+[![Packagist downloads](https://img.shields.io/packagist/dt/plutuss/laravel-geonames-api)](https://packagist.org/packages/plutuss/laravel-geonames-api)
+[![MIT license](https://img.shields.io/packagist/l/plutuss/laravel-geonames-api)](./LICENSE.md)
 
-- [GitHub](https://github.com/plutuss/geo-laravel).
+Look up postal codes, find places near coordinates, and resolve local time zones in Laravel. Use the GeoNames API to add city suggestions to address forms or display local times on location-based pages.
 
-> [!NOTE]
-> The Laravel Geonames API package provides an easy way to integrate the Geonames API into your Laravel application.
-> This package enables developers to effortlessly interact with the Geonames API to retrieve geographic data such as
-> cities, countries, coordinates, time zones, and other location-based information.
+## Installation
 
-- Key Features
+Requires Laravel 8–11 and PHP 8.0 or newer, subject to your Laravel version's PHP requirements.
 
-1. **Geonames API Requests**: Simple method to send requests and handle responses from the Geonames API.
-2. **Support for Various Query Types**: Supports all major query types including name searches, reverse geocoding, and
-   more.
-3. **Configuration**: Easy setup of API credentials and other parameters through a configuration file.
-4. **Laravel Compatibility**: Full integration with the Laravel ecosystem, including support for Service Providers and
-   Facades.
-
-
-
-```shell
- composer require plutuss/laravel-geonames-api
+```bash
+composer require plutuss/laravel-geonames-api
 ```
 
-```shell
-php artisan vendor:publish --provider="Plutuss\GeoNames\Providers\GeoNamesServiceProvider"
-```
+Create a GeoNames account, enable web services for it, and add the username to your Laravel application's `.env`. [GeoNames web services setup](https://www.geonames.org/export/web-services.html)
 
 ```dotenv
-#  .env
-GEO_NAMES_USERNAME=user_name
+GEO_NAMES_USERNAME=your_geonames_username
 ```
-Publishing the config is optional. Set `GEO_NAMES_USERNAME` before making requests.
 
-## Use Facade GeoName
+The examples below describe the current repository code. Check the changelog on GitHub and the version on Packagist when using a tagged release. [GitHub releases](https://github.com/plutuss/geo-laravel/releases) · [Packagist versions](https://packagist.org/packages/plutuss/laravel-geonames-api)
+
+## Quick start
 
 ```php
+use Plutuss\GeoNames\Facades\GeoName;
 
-        $response = GeoName::postalCodeSearchJSONFromName('city_name');
+$places = GeoName::setCountryCode('DE')
+    ->postalCodeSearchJSONFromPostCode('01067');
 
-        $response = GeoName::setPostalCode(6600)
-            ->setCountryCode('CH')
-            ->postalCodeSearchJSONFromName('city_name');
-            
-          // OR
-      
-        $response = GeoName::setOption([
-            'country' => 'CH',
-        ])->postalCodeSearchJSONFromName('city_name');
+$city = $places->first()?->placeName();
 ```
+
+Pass postal codes as strings to preserve leading zeros and letters. The default response is a Laravel collection of `GeoNameResponse` objects.
+
+### Find nearby places and local time
 
 ```php
-        $response = GeoName::postalCodeSearchJSONFromPostCode(6600);
+use Plutuss\GeoNames\Facades\GeoName;
 
-        $response = GeoName::setCountryCode('CH')
-            ->postalCodeSearchJSONFromPostCode(6600);
-            
-          // OR
+$nearby = GeoName::setMaxRows(5)
+    ->findNearbyPlaceNameJSON(51.0504, 13.7373);
 
-        $response = GeoName::setOption([
-            'country' => 'CH',
-        ])->postalCodeSearchJSONFromPostCode('6600');
-
-        $response = GeoName::postalCodeSearchJSONFromPostCode('01067');
-        $response = GeoName::findNearbyJSON(51.0504, 13.7373);
+$timezone = GeoName::timezoneJSON(51.0504, 13.7373)
+    ->first()?->getNestedValue('timezoneId');
 ```
 
+### Search by place name
 
 ```php
-     setCountryCode(string $countryCode): static;
-    
-     setPostalCode(string|int $value): static;
+use Plutuss\GeoNames\Facades\GeoName;
 
-     setPostalCodeStartsWith(string $value): static;
- 
-     setPlaceName(string $value): static;
-
-     setPlaceNameStartsWith(string $value): static;
-
-     setCountry(string $value): static;
-
-     setCountryBias(string $value): static;
-
-     setMaxRows(int $value): static;
-  
-     setStyle(string $value): static;
-
-     setOperator(string $value): static;
-
-     setCharset(string $value): static;
-
-     setIsReduced(bool $value): static;
-   
-     setEast(float $value): static;
-   
-     setWest(float $value): static;
-
-     setNorth(float $value): static;
-
-     setSouth(float $value): static;
- 
-     setLatitude(string $value): static;
-
-     setLongitude(string $value): static;
- 
-     setRadius(int $value): static;
+$places = GeoName::setOption(['q' => 'Dresden', 'maxRows' => 5])
+    ->searchJSON('DE');
 ```
 
-```php
-     setOption(array $params): static;
-```
-
-```php
-     searchJSON(?string $country = null): JsonResponse|array|Collection;
-
-     postalCodeSearchJSONFromPostCode(string|int $postalCode, ?int $radius = null, ?int $maxRows = null): JsonResponse|array|Collection;
-
-     postalCodeSearchJSONFromName(string $name, ?int $radius = null, ?int $maxRows = null): JsonResponse|array|Collection;
-
-     findNearbyPostalCodes(float $lat, float $lng): JsonResponse|array|Collection;
-
-     getCountryCodeFromCoordinates(float $lat, float $lng): JsonResponse|array|Collection;
-
-     postalCodeCountryInfo(): JsonResponse|array|Collection;
-
-     findNearbyJSON(float $lat, float $lng): JsonResponse|array|Collection;
-
-```
-
-Options set through the facade apply to the next request and are cleared even if it fails.
-Method arguments take precedence over fluent options, which take precedence over configuration defaults.
-Postal searches default to a radius of 5 and a maximum of 10 rows.
-
-### More GeoNames endpoints
+## API reference
 
 | Method | Result |
 | --- | --- |
-| `timezoneJSON(float $lat, float $lng)` | Time zone and local time for the coordinates |
-| `countryInfoJSON(?string $country = null)` | Country details, including capital and population. Omit the country to list all countries. |
-| `findNearbyPlaceNameJSON(float $lat, float $lng)` | Nearby populated places |
-| `getByGeoNameId(int $geoNameId)` | Place details for a GeoNames ID |
-| `postalCodeLookupJSON(string\|int $postalCode, ?string $country = null)` | Places that match a postal code |
+| `searchJSON($country = null)` | Place search. Pass search parameters such as `q` through `setOption()`. |
+| `postalCodeSearchJSONFromPostCode($postalCode, $radius = null, $maxRows = null)` | Postal records matching a code. |
+| `postalCodeSearchJSONFromName($name, $radius = null, $maxRows = null)` | Postal records matching a place-name prefix. |
+| `postalCodeLookupJSON($postalCode, $country = null)` | Places matching a postal code. |
+| `findNearbyPostalCodes($lat, $lng)` | Postal records near a point. |
+| `postalCodeCountryInfo()` | Countries with postal-code geocoding data. |
+| `findNearbyJSON($lat, $lng)` | Geographic features near a point. |
+| `findNearbyPlaceNameJSON($lat, $lng)` | Populated places near a point. |
+| `getCountryCodeFromCoordinates($lat, $lng)` | Country code and details for a point. |
+| `countryInfoJSON($country = null)` | Country details such as capital and population. Omit the country to list all countries. |
+| `timezoneJSON($lat, $lng)` | Time zone and local time for a point. |
+| `getByGeoNameId($geoNameId)` | A geographic feature by its GeoNames ID. |
 
-```php
-$timeZone = GeoName::setOption(['lang' => 'de'])->timezoneJSON(51.0504, 13.7373);
-$countries = GeoName::countryInfoJSON();
-$nearbyPlaces = GeoName::findNearbyPlaceNameJSON(51.0504, 13.7373);
-$dresden = GeoName::getByGeoNameId(2935022);
-$places = GeoName::postalCodeLookupJSON('01067', 'DE');
+Country filters accept ISO 3166-1 alpha-2 codes such as `DE`. Coordinates accept decimal degrees. Postal searches default to a radius of 5 and a maximum of 10 rows. Options set through `setOption()` or fluent setters apply to the next call, even if it fails. Method arguments take precedence over fluent options, followed by configuration defaults. See the [service interface](src/Services/GeoNameServiceInterface.php) for available setters and the [GeoNames documentation](https://www.geonames.org/export/web-services.html) for endpoint-specific options.
+
+Use `Plutuss\GeoNames\Services\GeoNameServiceInterface` for dependency injection.
+
+## Configuration
+
+Laravel loads the default settings automatically. Publish the configuration to customize options such as the default country or response adapters.
+
+```bash
+php artisan vendor:publish --provider="Plutuss\GeoNames\Providers\GeoNamesServiceProvider"
 ```
 
-`timezoneJSON()` and `getByGeoNameId()` return one record in the configured response format,
-like `getCountryCodeFromCoordinates()`. See the [GeoNames web service documentation](https://www.geonames.org/export/web-services.html)
-for optional endpoint parameters you can pass through `setOption()`.
+| Setting | Default | Purpose |
+| --- | --- | --- |
+| `GEO_NAMES_USERNAME` | Empty | Username for a GeoNames account with web services enabled. |
+| `GEO_NAMES_ENDPOINT` | `https://secure.geonames.org` | Base URL for GeoNames API requests. |
+| `GEO_NAMES_RESPONSE` | `collection` | Response format. Supports `collection`, `array`, and `json`. |
+| `geo-names.country-code` | Empty | Default country for place search, postal search, and postal lookup. |
 
-## Response
+### Response formats
 
-An empty result is returned in the configured format. HTTP failures raise Laravel's HTTP client exception.
-GeoNames errors and malformed responses raise `UnexpectedValueException`.
+| Format | Return value |
+| --- | --- |
+| `collection` | Laravel collection of `GeoNameResponse` objects. |
+| `array` | Array of records. Set `geo-names.type_response.arrays_with_wrapper` to `true` for an array of `GeoNameResponse` objects. |
+| `json` | Laravel `JsonResponse` with the records under the `data` key. |
 
-```php
+Time-zone, country-code, and GeoNames ID lookups return a single record inside the configured response format. Searches with no matches return an empty list in that format. In collection mode, access postal fields with `placeName()`, `postalCode()`, or `countryCode()`. Use `getArrayData()` for the raw record or `getNestedValue()` for other fields.
 
-     latitude(): mixed;
+### Error handling
 
-     getCollectionData(): Collection;
+Laravel's HTTP client throws `Illuminate\Http\Client\RequestException` for HTTP errors and `Illuminate\Http\Client\ConnectionException` for connection failures. GeoNames API errors and invalid responses throw `UnexpectedValueException`. For a GeoNames API error, the exception carries the upstream error code when available. [GeoNames error codes](https://www.geonames.org/export/webservice-exception.html)
 
-     getArrayData(): array;
+## Development
 
-     longitude(): mixed;
-
-     placeName(): mixed;
-
-     postalCode(): mixed;
-
-     countryCode(): mixed;
-
-     region(): mixed;
-
-     land(): mixed;
-
-    // The getNestedValue() method retrieves a value
-    // from a deeply nested array using "dot" notation
-    // $response->getNestedValue('key.array')
-     getNestedValue($path, $default = null): mixed;
+```bash
+composer install
+composer test
 ```
 
-## Tests
+Tests use Laravel HTTP fakes and run without a GeoNames account. Report bugs with the package version, Laravel version, and a small reproduction. [GitHub Issues](https://github.com/plutuss/geo-laravel/issues)
 
-Run `composer install` and `composer test`. The tests use Laravel's HTTP fakes and require no GeoNames account.
+## License and data attribution
+
+The package is released under the [MIT license](./LICENSE.md). Geographic data comes from GeoNames. Include GeoNames attribution wherever your application uses that data. [GeoNames data and web services](https://www.geonames.org/export/)
