@@ -185,3 +185,7 @@ GeoNames errors and malformed responses raise `UnexpectedValueException`.
     // $response->getNestedValue('key.array')
      getNestedValue($path, $default = null): mixed;
 ```
+
+## Tests
+
+Run `composer install` and `composer test`. The tests use Laravel's HTTP fakes and require no GeoNames account.
