@@ -170,10 +170,15 @@ interface GeoNameServiceInterface
      */
     public function getCountryCodeFromCoordinates(float $lat, float $lng): JsonResponse|array|Collection;
 
+    public function timezoneJSON(float $lat, float $lng): JsonResponse|array|Collection;
 
+    public function countryInfoJSON(?string $country = null): JsonResponse|array|Collection;
 
+    public function findNearbyPlaceNameJSON(float $lat, float $lng): JsonResponse|array|Collection;
 
+    public function getByGeoNameId(int $geoNameId): JsonResponse|array|Collection;
 
+    public function postalCodeLookupJSON(string|int $postalCode, ?string $country = null): JsonResponse|array|Collection;
 
     /**
      * @param array $params

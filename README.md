@@ -133,6 +133,28 @@ Options set through the facade apply to the next request and are cleared even if
 Method arguments take precedence over fluent options, which take precedence over configuration defaults.
 Postal searches default to a radius of 5 and a maximum of 10 rows.
 
+### More GeoNames endpoints
+
+| Method | Result |
+| --- | --- |
+| `timezoneJSON(float $lat, float $lng)` | Time zone and local time for the coordinates |
+| `countryInfoJSON(?string $country = null)` | Country details, including capital and population. Omit the country to list all countries. |
+| `findNearbyPlaceNameJSON(float $lat, float $lng)` | Nearby populated places |
+| `getByGeoNameId(int $geoNameId)` | Place details for a GeoNames ID |
+| `postalCodeLookupJSON(string\|int $postalCode, ?string $country = null)` | Places that match a postal code |
+
+```php
+$timeZone = GeoName::setOption(['lang' => 'de'])->timezoneJSON(51.0504, 13.7373);
+$countries = GeoName::countryInfoJSON();
+$nearbyPlaces = GeoName::findNearbyPlaceNameJSON(51.0504, 13.7373);
+$dresden = GeoName::getByGeoNameId(2935022);
+$places = GeoName::postalCodeLookupJSON('01067', 'DE');
+```
+
+`timezoneJSON()` and `getByGeoNameId()` return one record in the configured response format,
+like `getCountryCodeFromCoordinates()`. See the [GeoNames web service documentation](https://www.geonames.org/export/web-services.html)
+for optional endpoint parameters you can pass through `setOption()`.
+
 ## Response
 
 An empty result is returned in the configured format. HTTP failures raise Laravel's HTTP client exception.

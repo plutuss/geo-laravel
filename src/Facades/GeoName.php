@@ -38,6 +38,11 @@ use Plutuss\GeoNames\Services\GeoNameServiceInterface;
  * @method static JsonResponse|array|Collection findNearbyPostalCodes(float $lat, float $lng)
  * @method static JsonResponse|array|Collection postalCodeCountryInfo()
  * @method static JsonResponse|array|Collection findNearbyJSON(float $lat, float $lng)
+ * @method static JsonResponse|array|Collection timezoneJSON(float $lat, float $lng)
+ * @method static JsonResponse|array|Collection countryInfoJSON(?string $country = null)
+ * @method static JsonResponse|array|Collection findNearbyPlaceNameJSON(float $lat, float $lng)
+ * @method static JsonResponse|array|Collection getByGeoNameId(int $geoNameId)
+ * @method static JsonResponse|array|Collection postalCodeLookupJSON(string|int $postalCode, ?string $country = null)
  *
  *
  * @see \Plutuss\GeoNames\Services\GeoNameService

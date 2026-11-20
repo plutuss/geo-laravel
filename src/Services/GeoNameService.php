@@ -60,6 +60,40 @@ class GeoNameService implements GeoNameServiceInterface
         return $this->request('findNearbyJSON', 'geonames', ['lat' => $lat, 'lng' => $lng]);
     }
 
+    public function timezoneJSON(float $lat, float $lng): JsonResponse|array|Collection
+    {
+        return $this->requestRecord('timezoneJSON', 'timezoneId', ['lat' => $lat, 'lng' => $lng]);
+    }
+
+    public function countryInfoJSON(?string $country = null): JsonResponse|array|Collection
+    {
+        $country = trim($country ?? '');
+        $params = $country === '' ? [] : ['country' => $country];
+
+        return $this->request('countryInfoJSON', 'geonames', $params);
+    }
+
+    public function findNearbyPlaceNameJSON(float $lat, float $lng): JsonResponse|array|Collection
+    {
+        return $this->request('findNearbyPlaceNameJSON', 'geonames', ['lat' => $lat, 'lng' => $lng]);
+    }
+
+    public function getByGeoNameId(int $geoNameId): JsonResponse|array|Collection
+    {
+        return $this->requestRecord('getJSON', 'geonameId', ['geonameId' => $geoNameId]);
+    }
+
+    public function postalCodeLookupJSON(string|int $postalCode, ?string $country = null): JsonResponse|array|Collection
+    {
+        $params = ['postalcode' => (string) $postalCode];
+        $country = trim($country ?? '');
+        if ($country !== '') {
+            $params['country'] = $country;
+        }
+
+        return $this->request('postalCodeLookupJSON', 'postalcodes', $params, $this->countryDefaults());
+    }
+
     private function searchPostalCodes(array $params, ?int $radius, ?int $maxRows): JsonResponse|array|Collection
     {
         $params += array_filter(['radius' => $radius, 'maxRows' => $maxRows], static fn ($value) => $value !== null);
